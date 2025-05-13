@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <!-- 导入SpringBoot默认的日志配置文件 -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <!--    自定义MDC机制 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint}     %clr([%X{reqId}]){faint}    %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径   ,不设置则默认是在当前项目下的LOG_HOME_IS_UNDEFINED文件夹-->   <!--不设置则默认是在当前项目下的LOG_HOME_IS_UNDEFINED文件夹-->
+    <!--    <property name="LOG_HOME" value="/springBoot-Log-demo/日志目录名"/>  -->      <!-- Win系统 测试环境 -->
+    <!--    <property name="LOG_HOME" value="/var/log"/>-->                              <!-- Linux系统 线上环境 -->
+
+    <springProperty scope="context" name="LOG_HOME" source="spring.application.name"/>
+    <!-- 在当前项目所在文件夹下,使用application.yml中的当前项目名称作为文件夹名 -->
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>   <!--    导入自定义的MDC日志 -->
+        </encoder>
+    </appender>
+
+    <!-- 按照每天生成日志文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 自定义滚动策略，防止日志文件无限变大，也就是日志文件写到什么时候为止，重新创建一个新的日志文件开始写 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--日志文件输出的文件名,文件保存位置以及文件命名规则，这里用到了%d{yyyy-MM-dd}表示当前日期，%i表示这一天的第N个日志 -->
+            <FileNamePattern>log/${LOG_HOME}/日志文件名.%d{yyyy-MM-dd}.第 %i 个日志.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>60</MaxHistory>
+            <!-- 最大单个日志文件大小 -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 到期自动清理日志文件 默认是false -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+
+    </appender>
+
+
+    <!--myibatis log configure-->
+    <logger name="com.chenjiajin" level="DEBUG"/>
+    <logger name="org.springframework.security" level="DEBUG"/>
+    <logger name="com.apache.ibatis" level="DEBUG"/>
+    <logger name="java.sql.Connection" level="ERROR"/>
+    <logger name="java.sql.Statement" level="ERROR"/>
+    <logger name="java.sql.PreparedStatement" level="ERROR"/>
+
+    <!-- 日志输出级别 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

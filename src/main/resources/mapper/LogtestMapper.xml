@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chenjiajin.mapper.LogtestMapper">
+
+    <resultMap id="BaseResultMap" type="com.chenjiajin.domain.Logtest">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="signatureName" column="signature_name" jdbcType="VARCHAR"/>
+        <result property="methodName" column="method_name" jdbcType="VARCHAR"/>
+        <result property="args" column="args" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,signature_name, method_name,args
+    </sql>
+
+
+</mapper>
